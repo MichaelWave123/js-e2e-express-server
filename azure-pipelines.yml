@@ -24,13 +24,21 @@ steps:
 - task: CopyFiles@2
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**'
+    contents: 'src/*public/*'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: 'Copy project files'
 
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
 - task: PublishPipelineArtifact@1
   inputs:
-    artifactName: blackjack
-    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifactName: e2e-server
+    targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     publishLocation: 'pipeline'
   displayName: 'Publish npm artifact'
